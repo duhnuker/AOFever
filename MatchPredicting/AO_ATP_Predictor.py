@@ -31,7 +31,7 @@ except Exception as e:
 # Initial Data Cleaning & Preparation
 
 # Convert 'Tour Name Date' to datetime objects for chronological splitting later
-df_atp['Tourney Date'] = pd.to_datetime(df_atp['Tour Name Date'], format='%Y%m%d')
+df_atp['Tourney Date'] = pd.to_datetime(df_atp['Date'], format='%Y-%m-%d')
 
 # Handle missing ranks and points
 # Strategy: Impute missing ranks with a value higher than any expected rank (e.g., 5000)

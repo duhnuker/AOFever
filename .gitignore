@@ -23,8 +23,9 @@ node_modules
 dist
 dist-ssr
 *.local
-DataScraping/AOFever
+venv
 .env
 chromedriver.exe
 __pycache__
+ao_head_to_head_predictor.pkl
 

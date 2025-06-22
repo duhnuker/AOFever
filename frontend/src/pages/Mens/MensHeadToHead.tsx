@@ -65,7 +65,7 @@ const MensHeadToHead = () => {
 
             console.log('Sending request with player stats:', requestPayload);
 
-            const response = await axios.post('/api/predictmenswinner', requestPayload);
+            const response = await axios.post('http://localhost:5000/api/predict/predictmenswinner', requestPayload);
 
             setSubmitMessage('Players submitted successfully!');
             console.log('Response:', response.data);
