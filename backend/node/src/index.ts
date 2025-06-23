@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import cors from 'cors';
 import 'dotenv/config';
 import router from './routes/index.js';
+import { errorHandler } from './middleware/errorHandler.js';
 
 const app = express();
 app.use(cors());
@@ -14,6 +15,8 @@ app.get("/", async (req: Request, res: Response) => {
 });
 
 app.use('/api', router);
+
+app.use(errorHandler)
 
 app.listen(PORT, () => {
     console.log(`Listening on port ${PORT}`);
