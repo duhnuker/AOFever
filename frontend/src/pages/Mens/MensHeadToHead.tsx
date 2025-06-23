@@ -20,7 +20,9 @@ const MensHeadToHead = () => {
         player2Odds: '1.50',
         enabled: false
     });
-    
+    const [winner, setWinner] = useState('');
+    const [confidencePercentage, setConfidencePercentage] = useState('');
+
     const { players, loading: playersLoading, error: playersError, getPlayerStats } = usePlayerData();
     const { filters, loading: filtersLoading, error: filtersError } = useAtpData();
 
@@ -68,7 +70,11 @@ const MensHeadToHead = () => {
             const response = await axios.post('http://localhost:5000/api/predict/predictmenswinner', requestPayload);
 
             setSubmitMessage('Players submitted successfully!');
+
             console.log('Response:', response.data);
+
+            setWinner(response.data.prediction.winner);
+            setConfidencePercentage(response.data.prediction.confidencePercentage);
         } catch (error) {
             console.error('Error submitting players:', error);
 
@@ -238,28 +244,28 @@ const MensHeadToHead = () => {
                             </Text>
                             <Flex gap="2" wrap="wrap">
                                 {selectedSurface && (
-                                    <Text size="1" style={{ 
-                                        backgroundColor: 'var(--accent-3)', 
-                                        padding: '2px 6px', 
-                                        borderRadius: '4px' 
+                                    <Text size="1" style={{
+                                        backgroundColor: 'var(--accent-3)',
+                                        padding: '2px 6px',
+                                        borderRadius: '4px'
                                     }}>
                                         Surface: {selectedSurface}
                                     </Text>
                                 )}
                                 {selectedRound && (
-                                    <Text size="1" style={{ 
-                                        backgroundColor: 'var(--accent-3)', 
-                                        padding: '2px 6px', 
-                                        borderRadius: '4px' 
+                                    <Text size="1" style={{
+                                        backgroundColor: 'var(--accent-3)',
+                                        padding: '2px 6px',
+                                        borderRadius: '4px'
                                     }}>
                                         Round: {selectedRound}
                                     </Text>
                                 )}
                                 {selectedBestOf && (
-                                    <Text size="1" style={{ 
-                                        backgroundColor: 'var(--accent-3)', 
-                                        padding: '2px 6px', 
-                                        borderRadius: '4px' 
+                                    <Text size="1" style={{
+                                        backgroundColor: 'var(--accent-3)',
+                                        padding: '2px 6px',
+                                        borderRadius: '4px'
                                     }}>
                                         Best of: {selectedBestOf}
                                     </Text>
@@ -269,6 +275,14 @@ const MensHeadToHead = () => {
                     )}
 
                     <BettingOdds onOddsChange={handleOddsChange} />
+
+
+                    {winner && confidencePercentage && (
+                        <Box>
+                            <Text className='pr-4'>Winner: {winner}</Text>
+                            <Text>Prediction confidence: {confidencePercentage}%</Text>
+                        </Box>
+                    )}
 
                     <Button
                         onClick={handleSubmit}
