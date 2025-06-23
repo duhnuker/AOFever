@@ -16,7 +16,7 @@ app.get("/", async (req: Request, res: Response) => {
 
 app.use('/api', router);
 
-app.use(errorHandler)
+app.use(errorHandler);
 
 app.listen(PORT, () => {
     console.log(`Listening on port ${PORT}`);
