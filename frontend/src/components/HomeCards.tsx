@@ -7,7 +7,6 @@ interface HomeCardProps {
   description: string;
   buttonText: string;
   linkTo: string;
-  gradientColors: string;
 }
 
 const HomeCard: React.FC<HomeCardProps> = ({ 
@@ -15,7 +14,6 @@ const HomeCard: React.FC<HomeCardProps> = ({
   description, 
   buttonText, 
   linkTo, 
-  gradientColors 
 }) => {
   return (
     <Card className="p-4 sm:p-6 md:p-8 hover:shadow-lg transition-all duration-300 border border-slate-200 bg-white/60 backdrop-blur-sm">
@@ -32,7 +30,7 @@ const HomeCard: React.FC<HomeCardProps> = ({
         <Button
           size={{ initial: "2", sm: "3", md: "3" }}
           variant="solid"
-          className={`w-full ${gradientColors} transition-all`}
+          className={`w-full transition-all`}
           asChild
         >
           <Link to={linkTo} className="no-underline">

@@ -3,10 +3,11 @@ import { Container, Theme, Heading, Flex, Button, Box, Text, Card, Grid } from '
 import Header from "../components/Header";
 import HomeCard from "../components/HomeCards";
 import ScrollVelocity from "../components/ScrollVelocity";
+import BounceCards from "../components/BounceCards";
 
 const Home = () => {
     return (
-        <Box>
+        <Box className="bg-gradient-to-t from-zinc-900 to-zinc-700">
             {/* Header */}
             <Header />
 
@@ -17,24 +18,36 @@ const Home = () => {
                         <Heading
                             as="h1"
                             size={{ initial: "7", sm: "8", md: "9" }}
-                            className="bg-gradient-to-r from-crimson-11 to-orange-11 bg-clip-text font-bold leading-tight"
+                            className="bg-clip-text font-bold leading-tight text-white"
                         >
                             Welcome to
                         </Heading>
 
                         <ScrollVelocity
-                        texts={["AOFever"]}
-                        velocity={50}
-                        className="mb-5 md:mb-12"
+                            texts={["AOFever"]}
+                            velocity={50}
+                            className="mb-5 md:mb-12 text-white"
                         />
 
                         <Text
                             size={{ initial: "3", sm: "5", md: "6" }}
-                            className="text-slate-600 mb-6 sm:mb-7 md:mb-8 max-w-xs sm:max-w-lg md:max-w-2xl mx-auto leading-relaxed px-4 sm:px-0"
+                            className="text-slate-400 mb-6 sm:mb-7 md:mb-8 max-w-xs sm:max-w-lg md:max-w-2xl mx-auto leading-relaxed px-4 sm:px-0"
                         >
-                            Your ultimate destination for everything Australian Open! Follow the action, stats, and excitement.
+                            Your ultimate destination for everything <Text className="text-lime-300">Australian Open!</Text> Follow the action, stats, and excitement.
                         </Text>
                     </Box>
+
+                    <Flex justify="center">
+                        <BounceCards
+                            className="opacity-70"
+                            images={["federer.webp", "zheng.jpeg", "djokovic.webp", "sabalenka.jpg", "murray.jpg", "serena.webp", "nadal.jpg"]}
+                            easeType="10"
+                            animationStagger={0.25}
+                            containerWidth={100}
+                            containerHeight={400}
+                            enableHover={true}
+                        />
+                    </Flex>
 
                     {/* Cards */}
                     <Grid
@@ -47,7 +60,6 @@ const Home = () => {
                             description="Follow the top ATP players as they compete for the Australian Open title"
                             buttonText="View Men's Draw"
                             linkTo="/aomenssingles"
-                            gradientColors="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700"
                         />
 
                         <HomeCard
@@ -55,7 +67,6 @@ const Home = () => {
                             description="Watch the ATP's finest compete in the premier Grand Slam tournament"
                             buttonText="View Men's Doubles Draw"
                             linkTo="/aomensdoubles"
-                            gradientColors="bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600"
                         />
 
                         <HomeCard
@@ -63,7 +74,6 @@ const Home = () => {
                             description="Watch the WTA's finest compete in the premier Grand Slam tournament"
                             buttonText="View Women's Singles Draw"
                             linkTo="/aowomenssingles"
-                            gradientColors="bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600"
                         />
 
                         <HomeCard
@@ -71,9 +81,7 @@ const Home = () => {
                             description="Watch the WTA's finest compete in the premier Grand Slam tournament"
                             buttonText="View Women's Doubles Draw"
                             linkTo="/aowomensdoubles"
-                            gradientColors="bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600"
                         />
-
                     </Grid>
                 </Container>
             </Box>
