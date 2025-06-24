@@ -1,12 +1,12 @@
 import "@radix-ui/themes/styles.css";
 import { Container, Theme, Heading, Flex, Button, Box, Text, Card, Grid } from '@radix-ui/themes';
-import { Link } from 'react-router-dom';
 import Header from "../components/Header";
 import HomeCard from "../components/HomeCards";
+import ScrollVelocity from "../components/ScrollVelocity";
 
 const Home = () => {
     return (
-        <Theme accentColor="crimson" className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+        <Box>
             {/* Header */}
             <Header />
 
@@ -17,10 +17,17 @@ const Home = () => {
                         <Heading
                             as="h1"
                             size={{ initial: "7", sm: "8", md: "9" }}
-                            className="pb-8 sm:pb-10 md:pb-14 bg-gradient-to-r from-crimson-11 to-orange-11 bg-clip-text font-bold leading-tight"
+                            className="bg-gradient-to-r from-crimson-11 to-orange-11 bg-clip-text font-bold leading-tight"
                         >
-                            Welcome to AOFever
+                            Welcome to
                         </Heading>
+
+                        <ScrollVelocity
+                        texts={["AOFever"]}
+                        velocity={50}
+                        className="mb-5 md:mb-12"
+                        />
+
                         <Text
                             size={{ initial: "3", sm: "5", md: "6" }}
                             className="text-slate-600 mb-6 sm:mb-7 md:mb-8 max-w-xs sm:max-w-lg md:max-w-2xl mx-auto leading-relaxed px-4 sm:px-0"
@@ -70,7 +77,7 @@ const Home = () => {
                     </Grid>
                 </Container>
             </Box>
-        </Theme>
+        </Box>
     )
 }
 
