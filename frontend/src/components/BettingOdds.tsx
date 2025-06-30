@@ -55,7 +55,7 @@ const BettingOdds = ({ onOddsChange }: BettingOddsProps) => {
     return (
         <Box>
             <Flex align="center" gap="2" mb="3">
-                Specify Odds?
+                <Text className='text-white'>Specify Odds?</Text>
                 <Checkbox
                     checked={showOdds}
                     onCheckedChange={(checked) => handleCheckboxChange(!!checked)}
