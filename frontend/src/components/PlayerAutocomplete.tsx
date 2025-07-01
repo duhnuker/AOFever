@@ -2,13 +2,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import { TextArea, Box } from '@radix-ui/themes';
 
 interface PlayerAutocompleteProps {
-  placeholder: string;
   onPlayerSelect: (player: string) => void;
   players: string[];
 }
 
 const PlayerAutocomplete: React.FC<PlayerAutocompleteProps> = ({
-  placeholder,
   onPlayerSelect,
   players
 }) => {
@@ -62,15 +60,16 @@ const PlayerAutocomplete: React.FC<PlayerAutocompleteProps> = ({
   };
 
   return (
-    <Box style={{ position: 'relative', width: '100%' }}>
+    <Box style={{ position: 'relative', width: '100%' }} className='motion-preset-fade motion-duration-2000'>
       <TextArea
+        size="3"
         ref={inputRef}
-        placeholder={placeholder}
         value={inputValue}
         onChange={handleInputChange}
         onKeyDown={handleKeyDown}
         onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
         onFocus={() => inputValue && setShowSuggestions(suggestions.length > 0)}
+        className='!bg-black !opacity-50 !rounded-2xl !text-white'
       />
       
       {showSuggestions && (
@@ -81,8 +80,8 @@ const PlayerAutocomplete: React.FC<PlayerAutocompleteProps> = ({
             left: 0,
             right: 0,
             backgroundColor: 'white',
-            border: '1px solid #ccc',
-            borderRadius: '4px',
+            border: '1px solid #BBF451',
+            borderRadius: '15px',
             maxHeight: '200px',
             overflowY: 'auto',
             zIndex: 1000,
@@ -93,11 +92,10 @@ const PlayerAutocomplete: React.FC<PlayerAutocompleteProps> = ({
             <Box
               key={index}
               onClick={() => handleSuggestionClick(suggestion)}
+              className='!bg-black !text-white text-center'
               style={{
                 padding: '8px 12px',
                 cursor: 'pointer',
-                backgroundColor: index === activeSuggestion ? '#f0f0f0' : 'white',
-                borderBottom: index < suggestions.length - 1 ? '1px solid #eee' : 'none'
               }}
               onMouseEnter={() => setActiveSuggestion(index)}
             >

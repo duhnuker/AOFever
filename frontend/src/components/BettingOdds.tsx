@@ -54,43 +54,45 @@ const BettingOdds = ({ onOddsChange }: BettingOddsProps) => {
 
     return (
         <Box>
-            <Flex align="center" gap="2" mb="3">
-                <Text className='text-white'>Specify Odds?</Text>
-                <Checkbox
-                    checked={showOdds}
-                    onCheckedChange={(checked) => handleCheckboxChange(!!checked)}
-                />
-            </Flex>
-
-            {showOdds && (
-                <Flex gap="3">
-                    <Box>
-                        <Text as="label" size="2" mb="1">
-                            Player 1 Odds
-                        </Text>
-                        <TextField.Root
-                            type="text"
-                            inputMode="decimal"
-                            placeholder="e.g., 1.55"
-                            value={player1Odds}
-                            onChange={(e) => handlePlayer1OddsChange(e.target.value)}
-                        />
-                    </Box>
-
-                    <Box>
-                        <Text as="label" size="2" mb="1">
-                            Player 2 Odds
-                        </Text>
-                        <TextField.Root
-                            type="text"
-                            inputMode="decimal"
-                            placeholder="e.g., 2.75"
-                            value={player2Odds}
-                            onChange={(e) => handlePlayer2OddsChange(e.target.value)}
-                        />
-                    </Box>
+            <Flex direction="column" align="center">
+                <Flex align="center" justify="center" gap="2" mb="3">
+                    <Text className='text-white font-bold'>Specify Odds?</Text>
+                    <Checkbox
+                        checked={showOdds}
+                        onCheckedChange={(checked) => handleCheckboxChange(!!checked)}
+                    />
                 </Flex>
-            )}
+
+                {showOdds && (
+                    <Flex gap="3" justify="center">
+                        <Box className='text-center'>
+                            <Text as="label" size="2" mb="1" className='text-white font-medium'>
+                                Player 1 Odds:
+                            </Text>
+                            <TextField.Root
+                                type="text"
+                                inputMode="decimal"
+                                placeholder="e.g., 1.55"
+                                value={player1Odds}
+                                onChange={(e) => handlePlayer1OddsChange(e.target.value)}
+                            />
+                        </Box>
+
+                        <Box className='text-center'>
+                            <Text as="label" size="2" mb="1" className='text-white font-medium'>
+                                Player 2 Odds:
+                            </Text>
+                            <TextField.Root
+                                type="text"
+                                inputMode="decimal"
+                                placeholder="e.g., 2.75"
+                                value={player2Odds}
+                                onChange={(e) => handlePlayer2OddsChange(e.target.value)}
+                            />
+                        </Box>
+                    </Flex>
+                )}
+            </Flex>
         </Box>
     )
 }
