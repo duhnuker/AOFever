@@ -77,6 +77,70 @@ export const predictMensWinner = async (
     }
 };
 
+export const predictWomensWinner = async (
+    player1: string,
+    player2: string,
+    surface: string,
+    round: string,
+    best_of: string,
+    player1Odds: string,
+    player2Odds: string,
+    player1Stats: PlayerStats,
+    player2Stats: PlayerStats
+): Promise<PredictionResult> => {
+    try {
+        console.log(`Calling FastAPI for womens prediction: ${player1} vs ${player2}`);
+
+        const requestData = {
+            player1,
+            player2,
+            surface,
+            round,
+            best_of,
+            player1Odds,
+            player2Odds,
+            player1Stats,
+            player2Stats
+        };
+
+        console.log('Request data:', JSON.stringify(requestData, null, 2));
+
+        const response = await axios.post(`${FASTAPI_BASE_URL}/predictwomenswinner`, requestData, {
+            timeout: 30000,
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        console.log('FastAPI response received:', response.data);
+
+        if (!response.data || typeof response.data.winner !== 'string' || typeof response.data.confidence !== 'number') {
+            throw new Error('Invalid response format from prediction service');
+        }
+
+        return {
+            winner: response.data.winner,
+            confidence: response.data.confidence
+        };
+
+    } catch (error) {
+        console.error('Error calling FastAPI:', error);
+        if (axios.isAxiosError(error)) {
+            if (error.code === 'ECONNREFUSED') {
+                throw new Error('FastAPI service is not available. Please ensure it is running on port 8000.');
+            }
+            if (error.response?.status === 503) {
+                throw new Error('ML model is not loaded. Please check the FastAPI service logs.');
+            }
+            if (error.response?.status === 400) {
+                throw new Error(`Invalid input data: ${error.response.data?.detail || 'Unknown validation error'}`);
+            }
+            throw new Error(`Prediction service error: ${error.response?.data?.detail || error.message}`);
+        }
+        throw new Error('Unknown error occurred while calling prediction service');
+    }
+};
+
 export const validatePredictionInput = (data: any): { isValid: boolean; error?: string } => {
     const { player1, player2, surface, round, bestOf, player1Odds, player2Odds, player1Stats, player2Stats } = data;
 
