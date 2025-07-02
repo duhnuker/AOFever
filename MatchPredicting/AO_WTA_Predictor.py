@@ -11,17 +11,17 @@ import sys
 
 # Load Data 
 try:
-    df_atp = pd.read_csv('atp.csv', low_memory=False)
-    print(f"Loaded ATP data: {len(df_atp)} rows")
+    df_wta = pd.read_csv('wta.csv', low_memory=False)
+    print(f"Loaded WTA data: {len(df_wta)} rows")
 
-    # Display first few rows and columns to confirm correct loading and structure
+    # Confirm correct loading and structure
     print("\nFirst 5 rows of the dataset:")
-    print(df_atp.head())
+    print(df_wta.head())
     print("\nColumns in the dataset:")
-    print(df_atp.columns.tolist())
+    print(df_wta.columns.tolist())
 
 except FileNotFoundError:
-    print("Error: 'atp.csv' not found.")
+    print("Error: 'wta.csv' not found.")
     print("Please ensure the CSV file is uploaded and named correctly.")
     sys.exit(1)
 except Exception as e:
@@ -29,34 +29,72 @@ except Exception as e:
     sys.exit(1)
 
 # Initial Data Cleaning & Preparation
+# Few date issues in csv, clean them
+print("\nCleaning date data...")
+df_wta['Date'] = df_wta['Date'].astype(str)
 
-# Convert 'Tour Name Date' to datetime objects for chronological splitting later
-df_atp['Tourney Date'] = pd.to_datetime(df_atp['Date'], format='%Y-%m-%d')
+print(f"Rows before date cleaning: {len(df_wta)}")
+df_wta = df_wta[~df_wta['Date'].str.contains('-1|nan|NaN|null|None', na=False, case=False)]
+print(f"Rows after removing problematic dates: {len(df_wta)}")
+
+# Convert to datetime with error handling
+try:
+    # Try original format first
+    df_wta['Tourney Date'] = pd.to_datetime(df_wta['Date'], format='%Y-%m-%d', errors='coerce')
+except:
+    # Else more flexible approach
+    df_wta['Tourney Date'] = pd.to_datetime(df_wta['Date'], errors='coerce')
+
+# Remove rows where date conversion failed
+initial_rows = len(df_wta)
+df_wta = df_wta.dropna(subset=['Tourney Date'])
+print(f"Rows after removing invalid dates: {len(df_wta)} (removed {initial_rows - len(df_wta)} rows)")
+
+if len(df_wta) == 0:
+    print("Error: No valid data remaining after date cleaning.")
+    sys.exit(1)
 
 # Handle missing ranks and points
 # Strategy: Impute missing ranks with a value higher than any expected rank (e.g., 5000)
 # and missing points with 0.
 # Betting odds: fill with a neutral value (e.g., 1.9, implying even odds) if missing.
-df_atp['Rank_1'].fillna(df_atp['Rank_1'].max() + 1000, inplace=True)
-df_atp['Rank_2'].fillna(df_atp['Rank_2'].max() + 1000, inplace=True)
-df_atp['Pts_1'].fillna(0, inplace=True)
-df_atp['Pts_2'].fillna(0, inplace=True)
-df_atp['Odd_1'].fillna(1.9, inplace=True)
-df_atp['Odd_2'].fillna(1.9, inplace=True)
+print("Handling missing values...")
+
+# Handle missing or invalid ranks and points
+df_wta['Rank_1'] = pd.to_numeric(df_wta['Rank_1'], errors='coerce')
+df_wta['Rank_2'] = pd.to_numeric(df_wta['Rank_2'], errors='coerce')
+df_wta['Pts_1'] = pd.to_numeric(df_wta['Pts_1'], errors='coerce')
+df_wta['Pts_2'] = pd.to_numeric(df_wta['Pts_2'], errors='coerce')
+df_wta['Odd_1'] = pd.to_numeric(df_wta['Odd_1'], errors='coerce')
+df_wta['Odd_2'] = pd.to_numeric(df_wta['Odd_2'], errors='coerce')
+
+# Fill missing values
+max_rank = df_wta[['Rank_1', 'Rank_2']].max().max()
+if pd.isna(max_rank):
+    max_rank = 1000  # fallback value
+
+df_wta['Rank_1'].fillna(max_rank + 1000, inplace=True)
+df_wta['Rank_2'].fillna(max_rank + 1000, inplace=True)
+df_wta['Pts_1'].fillna(0, inplace=True)
+df_wta['Pts_2'].fillna(0, inplace=True)
+df_wta['Odd_1'].fillna(1.9, inplace=True)
+df_wta['Odd_2'].fillna(1.9, inplace=True)
 
 # Drop rows where 'Winner' is missing
-df_atp.dropna(subset=['Winner'], inplace=True)
+df_wta.dropna(subset=['Winner'], inplace=True)
 
 # Filter out matches where odds are exactly -1
-df_atp = df_atp[df_atp['Odd_1'] != -1]
-df_atp = df_atp[df_atp['Odd_2'] != -1]
+df_wta = df_wta[df_wta['Odd_1'] != -1]
+df_wta = df_wta[df_wta['Odd_2'] != -1]
 
+print(f"Final dataset size after cleaning: {len(df_wta)} rows")
 
 # Feature Engineering
+print("Creating features...")
 
 match_features = []
 
-for index, row in df_atp.iterrows():
+for index, row in df_wta.iterrows():
     # Features common to both player perspectives in this match
     common_feats = {
         'Surface': row['Surface'],
@@ -92,15 +130,17 @@ for index, row in df_atp.iterrows():
 # Convert the list of feature dictionaries into a Pandas DataFrame
 df_processed = pd.DataFrame(match_features)
 
-# Positive if P has better rank
-df_processed['Rank_Diff'] = df_processed['P_Rank'] - df_processed['OP_Rank']
+# Positive if P has better rank (lower number = better rank)
+df_processed['Rank_Diff'] = df_processed['OP_Rank'] - df_processed['P_Rank']
 # Positive if P has more points
 df_processed['Pts_Diff'] = df_processed['P_Pts'] - df_processed['OP_Pts']
 
 # Log odds ratio is often more stable for betting odds
 # Add a small epsilon to avoid log(0) in case of extreme odds
-df_processed['Odd_Ratio_Log'] = df_processed.apply(lambda r: np.log(r['P_Odd'] / r['OP_Odd']) if r['OP_Odd'] > 0 else np.nan, axis=1)
-# Fill any NaN (if OP_Odd was zero) with 0 (neutral)
+df_processed['Odd_Ratio_Log'] = df_processed.apply(
+    lambda r: np.log(r['OP_Odd'] / r['P_Odd']) if r['P_Odd'] > 0 else np.nan, axis=1
+)
+# Fill any NaN (if P_Odd was zero) with 0 (neutral)
 df_processed['Odd_Ratio_Log'].fillna(0, inplace=True) 
 
 # Defining Features X and Target y
@@ -113,6 +153,9 @@ y = df_processed['Winner_Is_P']
 # Identify numerical and categorical features for the ColumnTransformer
 numerical_features = X.select_dtypes(include=np.number).columns.tolist()
 categorical_features = X.select_dtypes(include='object').columns.tolist()
+
+print(f"Numerical features: {numerical_features}")
+print(f"Categorical features: {categorical_features}")
 
 # Create a preprocessing pipeline:
 # Prevents errors if new categories appear in test/prediction data).
@@ -161,7 +204,6 @@ if X_test.empty or y_test.empty:
     print(f"Adjusted Training data shape: {X_train.shape}")
     print(f"Adjusted Testing data shape: {X_test.shape}")
 
-
 # Train RandomForestClassifier Model
 model = Pipeline(steps=[('preprocessor', preprocessor),
                         ('classifier', RandomForestClassifier(n_estimators=200, random_state=42, n_jobs=-1))])
@@ -186,68 +228,6 @@ if not X_test.empty:
 else:
     print("\nNo test data available for evaluation.")
 
-# Trained model saved for future
-joblib.dump(model, 'ao_mens_head_to_head_predictor.pkl')
-print("\nModel saved as 'ao_mens_head_to_head_predictor.pkl'")
-
-
-# Prediction for a Hypothetical 2026 Australian Open Final
-print("\n--- Hypothetical 2026 Australian Open Men's Final Prediction ---")
-
-
-
-
-# ------ TESTING HYPOTHETICAL FINAL HEAD TO HEAD ------ #
-
-
-# Define hypothetical finalists and their *estimated* stats for 2026.
-# Replace with actual players and their expected or current stats.
-player_a_name = "Novak Djokovic"
-player_b_name = "Carlos Alcaraz"
-
-# Placeholder estimated stats for the 2026 Australian Open Final.
-# You would ideally base these on their current form, age, trajectory, etc.
-player_a_estimated_stats = {
-    'Rank': 1,      # Lower rank is better (e.g., world No. 1)
-    'Pts': 12000,   # Points example
-    'Odd': 1.5      # Hypothetical betting odd for Player A to win this match
-}
-
-player_b_estimated_stats = {
-    'Rank': 2,      
-    'Pts': 10500,   # Points example
-    'Odd': 2.2      # Hypothetical betting odd for Player B to win this match
-}
-
-# Match Context for the Australian Open Final
-hypothetical_match_context = {
-    'Surface': 'Hard', # Australian Open surface
-    'Round': 'Final',  # Predicting a final match
-    'Best of': 5       # Men's Grand Slam finals are typically Best of 5 sets
-}
-
-# DataFrame for single prediction.
-hypothetical_final_data = pd.DataFrame([{
-    'Surface': hypothetical_match_context['Surface'],
-    'Round': hypothetical_match_context['Round'],
-    'Best of': hypothetical_match_context['Best of'],
-    'Rank_Diff': player_a_estimated_stats['Rank'] - player_b_estimated_stats['Rank'],
-    'Pts_Diff': player_a_estimated_stats['Pts'] - player_b_estimated_stats['Pts'],
-    # Calculate log odds ratio for prediction input, matching training feature
-    'Odd_Ratio_Log': np.log(player_a_estimated_stats['Odd'] / player_b_estimated_stats['Odd'])
-}])
-
-# Make the prediction using the trained model
-prediction_proba = model.predict_proba(hypothetical_final_data)[0]
-proba_player_a_wins = prediction_proba[1] # Probability that Player A wins (class 1)
-proba_player_b_wins = prediction_proba[0] # Probability that Player B wins (class 0)
-
-print(f"\nHypothetical Final: {player_a_name} (Rank: {player_a_estimated_stats['Rank']}) vs. {player_b_name} (Rank: {player_b_estimated_stats['Rank']})")
-print(f"Surface: {hypothetical_match_context['Surface']}, Round: {hypothetical_match_context['Round']}")
-print(f"Predicted Probability of {player_a_name} winning: {proba_player_a_wins:.2%}")
-print(f"Predicted Probability of {player_b_name} winning: {proba_player_b_wins:.2%}")
-
-if proba_player_a_wins > proba_player_b_wins:
-    print(f"\n**Predicted Winner of this Hypothetical Match: {player_a_name}**")
-else:
-    print(f"\n**Predicted Winner of this Hypothetical Match: {player_b_name}**")
+# Save the trained model for future use
+joblib.dump(model, 'ao_womens_head_to_head_predictor.pkl')
+print("\nModel saved as 'ao_womens_head_to_head_predictor.pkl'")

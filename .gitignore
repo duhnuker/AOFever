@@ -27,5 +27,6 @@ venv
 .env
 chromedriver.exe
 __pycache__
-ao_head_to_head_predictor.pkl
+ao_mens_head_to_head_predictor.pkl
+ao_womens_head_to_head_predictor.pkl
 
