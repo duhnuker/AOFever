@@ -3,7 +3,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import PlayerAutocomplete from '../../components/PlayerAutocomplete';
 import FilterDropdown from '../../components/FilterDropdown';
-import { usePlayerData } from '../../hooks/usePlayerData';
+import { useAtpPlayerData } from '../../hooks/useAtpPlayerData';
 import { useAtpData } from '../../hooks/useAtpData';
 import BettingOdds from '../../components/BettingOdds';
 import Header from '../../components/Header';
@@ -26,7 +26,7 @@ const MensHeadToHead = () => {
     const [winner, setWinner] = useState('');
     const [confidencePercentage, setConfidencePercentage] = useState('');
 
-    const { players, loading: playersLoading, error: playersError, getPlayerStats } = usePlayerData();
+    const { players, loading: playersLoading, error: playersError, getPlayerStats } = useAtpPlayerData();
     const { filters, loading: filtersLoading, error: filtersError } = useAtpData();
 
     // Get player stats

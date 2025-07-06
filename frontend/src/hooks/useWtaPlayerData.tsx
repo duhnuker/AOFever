@@ -29,7 +29,7 @@ const parseCSVLine = (line: string): string[] => {
   return result;
 };
 
-export const usePlayerData = () => {
+export const useWtaPlayerData = () => {
   const [players, setPlayers] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -38,7 +38,7 @@ export const usePlayerData = () => {
   useEffect(() => {
     const loadPlayerData = async () => {
       try {
-        const response = await fetch('../../atp.csv');
+        const response = await fetch('../../wta.csv');
         if (!response.ok) {
           throw new Error('Failed to fetch player data');
         }
