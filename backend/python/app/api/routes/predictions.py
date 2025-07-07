@@ -1,11 +1,12 @@
-from fastapi import HTTPException
-from backend.python.app.main import app
+from fastapi import HTTPException, APIRouter
 from app.models.schemas import PredictionRequest, PredictionResponse
 from app.models.ml_models import prepare_prediction_features
 from app.core.logging import logger
 from app.models.ml_models import get_mens_model, get_womens_model 
 
-@app.post("/predictmenswinner", response_model=PredictionResponse, tags=["Predictions"])
+router = APIRouter()
+
+@router.post("/predictmenswinner", response_model=PredictionResponse, tags=["Predictions"])
 async def predict_mens_winner(request: PredictionRequest):
     mens_model = get_mens_model()
     if mens_model is None:
@@ -48,7 +49,7 @@ async def predict_mens_winner(request: PredictionRequest):
             detail=f"Error making prediction: {str(e)}"
         )
     
-@app.post("/predictwomenswinner", response_model=PredictionResponse, tags=["Predictions"])
+@router.post("/predictwomenswinner", response_model=PredictionResponse, tags=["Predictions"])
 async def predict_womens_winner(request: PredictionRequest):
     womens_model = get_womens_model()
     if womens_model is None:

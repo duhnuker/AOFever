@@ -7,6 +7,7 @@ import AOWomensSingles from './pages/Womens/AOWomensSingles';
 import AOMensDoubles from "./pages/Mens/AOMensDoubles";
 import AOWomensDoubles from "./pages/Womens/AOWomensDoubles";
 import MensHeadToHead from "./pages/Mens/MensHeadToHead";
+import WomensHeadToHead from "./pages/Womens/WomensHeadToHead";
 
 
 function App() {
@@ -15,12 +16,13 @@ function App() {
     <Theme accentColor="lime">
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Home />}></Route>
+          <Route path='/' element={<Home />}></Route>
           <Route path='/aomenssingles' element={<AOMensSingles />}></Route>
           <Route path='/aomensdoubles' element={<AOMensDoubles />}></Route>
           <Route path='/aowomenssingles' element={<AOWomensSingles />}></Route>
           <Route path='/aowomensdoubles' element={<AOWomensDoubles />}></Route>
           <Route path='/mensheadtohead' element={<MensHeadToHead />}></Route>
+          <Route path='/womensheadtohead' element={<WomensHeadToHead />}></Route>
         </Routes>
       </BrowserRouter>
     </Theme>
