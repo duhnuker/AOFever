@@ -43,9 +43,9 @@ export const useWtaData = () => {
           if (line) {
             const values = line.split(',');
             if (values.length >= headers.length) {
-              const surface = values[4]?.trim();
-              const round = values[5]?.trim();
-              const bestOf = values[6]?.trim();
+              const surface = values[3]?.trim();
+              const round = values[4]?.trim();
+              const bestOf = values[5]?.trim();
 
               if (surface) surfaceSet.add(surface);
               if (round) roundSet.add(round);
