@@ -20,22 +20,22 @@ export interface AusOpenDoublesResult {
     score: string;
 }
 
-export const getMensSingles = async (): Promise<AusOpenSinglesResult[]> => {
+export const fetchAoMensSingles = async (): Promise<AusOpenSinglesResult[]> => {
     const result = await pool.query('SELECT * FROM aus_open_mens_singles ORDER BY year DESC');
     return result.rows;
 };
 
-export const getMensDoubles = async (): Promise<AusOpenDoublesResult[]> => {
+export const fetchAoMensDoubles = async (): Promise<AusOpenDoublesResult[]> => {
     const result = await pool.query('SELECT * FROM aus_open_mens_doubles ORDER BY year DESC');
     return result.rows;
 };
 
-export const getWomensSingles = async (): Promise<AusOpenSinglesResult[]> => {
+export const fetchAoWomensSingles = async (): Promise<AusOpenSinglesResult[]> => {
     const result = await pool.query('SELECT * FROM aus_open_womens_singles ORDER BY year DESC');
     return result.rows;
 };
 
-export const getWomensDoubles = async (): Promise<AusOpenDoublesResult[]> => {
+export const fetchAoWomensDoubles = async (): Promise<AusOpenDoublesResult[]> => {
     const result = await pool.query('SELECT * FROM aus_open_womens_doubles ORDER BY year DESC');
     return result.rows;
 };

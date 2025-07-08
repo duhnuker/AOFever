@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
-import { getMensSingles, getMensDoubles, getWomensSingles, getWomensDoubles } from '../models/ausOpenFinalsModel.js';
+import { fetchAoMensSingles, fetchAoMensDoubles, fetchAoWomensSingles, fetchAoWomensDoubles } from '../models/ausOpenFinalsModel.js';
 
-export const getMensSinglesFinals = async (req: Request, res: Response): Promise<void> => {
+export const getAoMensSinglesFinals = async (req: Request, res: Response): Promise<void> => {
     try {
-        const data = await getMensSingles();
+        const data = await fetchAoMensSingles();
         res.json(data);
     } catch (error: unknown) {
         console.error('Database error:', error);
@@ -11,9 +11,9 @@ export const getMensSinglesFinals = async (req: Request, res: Response): Promise
     }
 };
 
-export const getMensDoublesFinals = async (req: Request, res: Response): Promise<void> => {
+export const getAoMensDoublesFinals = async (req: Request, res: Response): Promise<void> => {
     try {
-        const data = await getMensDoubles();
+        const data = await fetchAoMensDoubles();
         res.json(data);
     } catch (error: unknown) {
         console.error('Database error:', error);
@@ -21,9 +21,9 @@ export const getMensDoublesFinals = async (req: Request, res: Response): Promise
     }
 };
 
-export const getWomensSinglesFinals = async (req: Request, res: Response): Promise<void> => {
+export const getAoWomensSinglesFinals = async (req: Request, res: Response): Promise<void> => {
     try {
-        const data = await getWomensSingles();
+        const data = await fetchAoWomensSingles();
         res.json(data);
     } catch (error: unknown) {
         console.error('Database error:', error);
@@ -31,9 +31,9 @@ export const getWomensSinglesFinals = async (req: Request, res: Response): Promi
     }
 };
 
-export const getWomensDoublesFinals = async (req: Request, res: Response): Promise<void> => {
+export const getAoWomensDoublesFinals = async (req: Request, res: Response): Promise<void> => {
     try {
-        const data = await getWomensDoubles();
+        const data = await fetchAoWomensDoubles();
         res.json(data);
     } catch (error: unknown) {
         console.error('Database error:', error);

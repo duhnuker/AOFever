@@ -1,16 +1,16 @@
 import express, { Router } from 'express';
 import { 
-    getMensSinglesFinals, 
-    getMensDoublesFinals, 
-    getWomensSinglesFinals, 
-    getWomensDoublesFinals 
+    getAoMensSinglesFinals, 
+    getAoMensDoublesFinals, 
+    getAoWomensSinglesFinals, 
+    getAoWomensDoublesFinals 
 } from '../controllers/ausOpenFinalsController.js';
 
 const router: Router = express.Router();
 
-router.get('/aomenssinglesfinals', getMensSinglesFinals);
-router.get('/aomensdoublesfinals', getMensDoublesFinals);
-router.get('/aowomenssinglesfinals', getWomensSinglesFinals);
-router.get('/aowomensdoublesfinals', getWomensDoublesFinals);
+router.get('/aomenssinglesfinals', getAoMensSinglesFinals);
+router.get('/aomensdoublesfinals', getAoMensDoublesFinals);
+router.get('/aowomenssinglesfinals', getAoWomensSinglesFinals);
+router.get('/aowomensdoublesfinals', getAoWomensDoublesFinals);
 
 export default router;
