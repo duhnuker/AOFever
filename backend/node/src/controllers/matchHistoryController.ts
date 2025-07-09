@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
-import { fetchAtpData, fetchWtaData } from '../models/matchHistoryModel.js';
+import { fetchAtpMatchFilters, fetchWtaMatchFilters } from '../models/matchHistoryModel.js';
 
-export const getAtpData = async (req: Request, res: Response): Promise<void> => {
+export const getAtpMatchFilters = async (req: Request, res: Response): Promise<void> => {
     try {
-        const data = await fetchAtpData();
+        const data = await fetchAtpMatchFilters();
         res.json(data);
     } catch (error: unknown) {
         console.error('Database error:', error);
@@ -11,9 +11,9 @@ export const getAtpData = async (req: Request, res: Response): Promise<void> => 
     }
 }
 
-export const getWtaData = async (req: Request, res: Response): Promise<void> => {
+export const getWtaMatchFilters = async (req: Request, res: Response): Promise<void> => {
     try {
-        const data = await fetchWtaData();
+        const data = await fetchWtaMatchFilters();
         res.json(data);
     } catch (error: unknown) {
         console.error("Database error:", error);

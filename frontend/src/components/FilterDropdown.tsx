@@ -2,7 +2,7 @@ import { Select } from '@radix-ui/themes';
 
 interface FilterDropdownProps {
   placeholder: string;
-  options: string[];
+  options: (string | number)[];
   value: string;
   onValueChange: (value: string) => void;
   disabled?: boolean;
@@ -22,7 +22,7 @@ const FilterDropdown = ({
         <Select.Group>
           <Select.Item value="Default">Default</Select.Item>
           {options.map((option) => (
-            <Select.Item key={option} value={option}>
+            <Select.Item key={option} value={option.toString()}>
               {option}
             </Select.Item>
           ))}

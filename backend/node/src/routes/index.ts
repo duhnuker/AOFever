@@ -6,7 +6,7 @@ import predictWinner from './predictWinner.js';
 const router: Router = express.Router();
 
 router.use('/ausopenfinals', ausOpenFinals);
-router.use('/matchHistory', matchHistory);
+router.use('/matchhistory', matchHistory);
 router.use('/predict', predictWinner);
 
 export default router;
